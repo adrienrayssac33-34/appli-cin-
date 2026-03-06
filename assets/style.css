@@ -1,0 +1,76 @@
+/* ============================= */
+/* GLOBAL APP STYLE */
+/* ============================= */
+
+.stApp {
+    background-color: #0b0b0b;
+    color: #F5E6C8;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
+
+section[data-testid="stSidebar"] {
+    background-color: #1a120b;
+}
+
+/* ============================= */
+/* TITRES */
+/* ============================= */
+
+h1, h2, h3 {
+    color: #FACC15;
+    text-align: center;
+}
+
+/* ============================= */
+/* SELECTBOX */
+/* ============================= */
+
+.stSelectbox div[data-baseweb="select"] {
+    background-color: #2b2118;
+    color: white;
+    border-radius: 8px;
+}
+
+/* ============================= */
+/* SLIDER */
+/* ============================= */
+
+.stSlider {
+    color: #FACC15;
+}
+
+/* ============================= */
+/* BUTTON */
+/* ============================= */
+
+.stButton button {
+    background-color: #b45309;
+    color: white;
+    border-radius: 8px;
+    border: none;
+}
+
+/* ============================= */
+/* DATAFRAME */
+/* ============================= */
+
+[data-testid="stDataFrame"] {
+    background-color: #111;
+    border-radius: 10px;
+}
+
+/* ============================= */
+/* FILM CARD (future reco) */
+/* ============================= */
+
+.film-card {
+    background-color: #1f1f1f;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+}
