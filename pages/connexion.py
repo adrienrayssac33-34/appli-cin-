@@ -37,36 +37,26 @@ set_bg("assets/landing_background.png")
 
 st.markdown("""
 <style>
-
-/* 1) Overlay sombre global pour le contraste */
 [data-testid="stAppViewContainer"]::before{
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);   /* ajuste 0.35 -> 0.60 */
+  background: rgba(0,0,0,0.45);
   z-index: 0;
 }
-
-/* 2) Remettre le contenu au-dessus de l'overlay */
 [data-testid="stAppViewContainer"] > .main{
   position: relative;
   z-index: 1;
 }
-
-/* 3) Titres et textes lisibles */
 h1, h2, h3, p, label, span {
   color: #F8E7C2 !important;
   text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
 }
-
-/* 4) Inputs : fond clair + coins arrondis */
 div[data-baseweb="input"] > div{
   background: rgba(255,255,255,0.92) !important;
   border-radius: 10px !important;
   border: 1px solid rgba(255,210,140,0.35) !important;
 }
-
-/* 5) Bouton principal cuivré */
 .stButton > button[kind="primary"]{
   background: linear-gradient(180deg, #C96A22, #8B3E12) !important;
   color: #FFF3D6 !important;
@@ -75,42 +65,22 @@ div[data-baseweb="input"] > div{
   font-weight: 800 !important;
   box-shadow: 0 10px 24px rgba(0,0,0,0.35) !important;
 }
-
-/* 6) Boutons secondaires plus soft */
 .stButton > button[kind="secondary"]{
   background: linear-gradient(180deg, #C96A22, #8B3E12) !important;
   color: #FFF3D6 !important;
   border: 1px solid rgba(255,210,140,0.35) !important;
   border-radius: 12px !important;
   font-weight: 800 !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.35) !important;, .stButton > button{
-  border-radius: 12px !important; color: #B22222 !important;
-
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35) !important;
 }
-            
-            /* centrer les boutons */
 .stButton{
     display:flex;
     justify-content:center;
 }
-
-/* 7) Un peu de largeur/respiration */
 .block-container{
   padding-top: 3rem !important;
-  max-width: 950px !important;   /* centre naturellement */
+  max-width: 950px !important;
 }
-            
-
-}           
-</style>
-""", unsafe_allow_html=True)
-
-# ==============================
-# CARD CSS (cible le wrapper "border" du container)
-# ==============================
-st.markdown("""
-<style>
-/* Card native (container border=True) */
 div[data-testid="stVerticalBlockBorderWrapper"]{
   background: rgba(10, 8, 6, 0.66) !important;
   border: 1px solid rgba(255, 210, 140, 0.30) !important;
@@ -120,8 +90,6 @@ div[data-testid="stVerticalBlockBorderWrapper"]{
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
-
-/* Titre & sous-titre */
 .auth-title{
   font-size: 46px;
   font-weight: 800;
@@ -135,39 +103,17 @@ div[data-testid="stVerticalBlockBorderWrapper"]{
   color: rgba(255, 232, 194, 0.90);
   margin-bottom: 18px;
 }
-
-/* Labels lisibles */
 label, p { color: rgba(255, 232, 194, 0.92) !important; }
-
-/* Inputs plus premium */
-div[data-baseweb="input"] > div{
-  background: rgba(255,255,255,0.92) !important;
-  border-radius: 10px !important;
-}
-
-/* Boutons */
-.stButton > button{
-  width: 100%;
-  border-radius: 12px !important;
-  padding: 0.8rem 1rem !important;
-  font-weight: 800 !important;
-  border: 1px solid rgba(255, 210, 140, 0.30) !important;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.35) !important;
-}
-.stButton > button[kind="primary"]{
-  background: linear-gradient(180deg, #C96A22, #8B3E12) !important;
-  color: #FFF3D6 !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
 # ==============================
-# DB
+# DB (chemin absolu)
 # ==============================
-DB_PATH = os.path.join("data_raw", "users.db")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # remonte à app.py
+DB_PATH = os.path.join(BASE_DIR, "users.db")  # ton vrai users.db
 
 def get_conn():
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     return sqlite3.connect(DB_PATH, check_same_thread=False)
 
 def init_db():
@@ -196,9 +142,7 @@ if st.session_state.get("authenticated", False):
 # UI (CARD CENTRÉE)
 # ==============================
 left, center, right = st.columns([1, 2, 1])
-
 with center:
-    # ✅ card native streamlit
     with st.container(border=True):
         st.markdown('<div class="auth-title">Connexion</div>', unsafe_allow_html=True)
         st.markdown('<div class="auth-sub">Accédez à votre espace Ciné Vintage</div>', unsafe_allow_html=True)
@@ -216,18 +160,14 @@ with center:
                 st.warning("Merci de remplir les deux champs.")
             else:
                 password_hash = hashlib.sha256(password_clean.encode()).hexdigest()
-
                 conn = get_conn()
                 cur = conn.cursor()
-                cur.execute(
-                    """
+                cur.execute("""
                     SELECT id, username
                     FROM users
                     WHERE (username = ? OR email = ?)
                       AND password_hash = ?
-                    """,
-                    (login_clean, login_clean, password_hash)
-                )
+                """, (login_clean, login_clean, password_hash))
                 row = cur.fetchone()
                 conn.close()
 
